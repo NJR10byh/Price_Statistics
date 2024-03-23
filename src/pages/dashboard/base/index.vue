@@ -5,45 +5,47 @@
   * @version 0.8.0
 -->
 <template>
-  <t-card class="main-info-card">
-    <t-row justify="start" class="cardTop">
-      <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
-      <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
-      <t-date-range-picker class="inputStyle rangeInputStyle" v-model="reportDateRange"
-                           :placeholder="['报单时间 起', '报单时间 止']" enable-time-picker clearable/>
-      <t-button style="margin-left: 5px;width: 100px;">
-        <template #icon>
-          <t-icon name="search"></t-icon>
+  <div>
+    <t-card class="main-info-card">
+      <t-row justify="start" class="cardTop">
+        <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
+        <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
+        <t-date-range-picker class="inputStyle rangeInputStyle" v-model="reportDateRange"
+                             :placeholder="['时间 起', '时间 止']" enable-time-picker clearable/>
+        <t-button style="margin-left: 5px;width: 100px;">
+          <template #icon>
+            <t-icon name="search"></t-icon>
+          </template>
+          查询
+        </t-button>
+      </t-row>
+    </t-card>
+    <t-card class="main-info-card">
+      <t-table
+          class="tableStyle"
+          row-key="index"
+          :data="mainInfoTable.tableData"
+          :columns="MAIN_INFO_TABLE_COLUMNS"
+          bordered
+          hover
+          :loading="mainInfoTable.tableLoading"
+          :pagination="mainInfoTable.pagination"
+          :header-affix-props="{ offsetTop: 0 }"
+          :header-affixed-top="{ offsetTop, container: getContainer }"
+          :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
+          :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
+          :scroll="{ type: 'virtual' }"
+          lazy-load
+          size="small"
+      >
+        <template #model="slotProps">
+          <t-tag theme="default">
+            <span style="font-weight: bold;">{{ isNotEmpty(slotProps.row.model) ? slotProps.row.model : "暂无" }}</span>
+          </t-tag>
         </template>
-        查询
-      </t-button>
-    </t-row>
-  </t-card>
-  <t-card class="main-info-card">
-    <t-table
-        class="tableStyle"
-        row-key="index"
-        :data="mainInfoTable.tableData"
-        :columns="MAIN_INFO_TABLE_COLUMNS"
-        bordered
-        hover
-        :loading="mainInfoTable.tableLoading"
-        :pagination="mainInfoTable.pagination"
-        :header-affix-props="{ offsetTop: 0 }"
-        :header-affixed-top="{ offsetTop, container: getContainer }"
-        :horizontal-scroll-affixed-bottom="{ offsetBottom: 64, container: getContainer }"
-        :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
-        :scroll="{ type: 'virtual' }"
-        lazy-load
-        size="small"
-    >
-      <template #model="slotProps">
-        <t-tag theme="default">
-          <span style="font-weight: bold;">{{ isNotEmpty(slotProps.row.model) ? slotProps.row.model : "暂无" }}</span>
-        </t-tag>
-      </template>
-    </t-table>
-  </t-card>
+      </t-table>
+    </t-card>
+  </div>
 </template>
 
 <script setup lang="ts">

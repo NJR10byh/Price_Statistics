@@ -83,7 +83,6 @@ import {getPermissionStore, useSettingStore, useUserStore} from "@/store";
 import {getActive} from "@/router";
 import {prefix} from "@/config/global";
 import {MenuRoute} from "@/types/interface";
-import {request} from "@/utils/request";
 import menuContent from "./MenuContent.vue";
 
 const props = defineProps({
@@ -158,19 +157,22 @@ const changeCollapsed = () => {
 };
 
 const handleLogout = () => {
-  request.post({
-    url: "/logout"
-  }).then(res => {
-    console.log(res);
-    if (res.code === 200) {
-      localStorage.removeItem("token");
-      router.push("/login");
-    }
-  }).catch(err => {
-    console.log(err);
-  }).finally(() => {
-    window.location.reload();
-  });
+  // request.post({
+  //   url: "/logout"
+  // }).then(res => {
+  //   console.log(res);
+  //   if (res.code === 200) {
+  //     localStorage.removeItem("token");
+  //     router.push("/login");
+  //   }
+  // }).catch(err => {
+  //   console.log(err);
+  // }).finally(() => {
+  //   window.location.reload();
+  // });
+  localStorage.removeItem("token");
+  router.push("/login");
+  // window.location.reload();
 };
 
 const navToGitHub = () => {
