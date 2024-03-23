@@ -7,31 +7,34 @@
         :value="active"
         style="z-index: 999"
     >
-      <template #logo>
-        <span v-if="showLogo" class="header-logo-container">
-          <img src="@/assets/assets-full-logo.png" class="logo"/>
-        </span>
-        <div v-else class="header-operate-left">
-          <t-button
-              theme="default"
-              shape="square"
-              variant="text"
-              @click="changeCollapsed"
-          >
-            <template #icon>
-              <t-icon v-if="settingStore.isSidebarCompact" class="collapsed-icon" name="menu-fold"/>
-              <t-icon v-else class="collapsed-icon" name="menu-unfold"/>
-            </template>
-          </t-button>
-          <l-breadcrumb v-if="settingStore.showBreadcrumb"/>
-          <!--          <search :layout="layout" />-->
-        </div>
-      </template>
+      <!--      <template #logo>-->
+      <!--        <span v-if="showLogo" class="header-logo-container">-->
+      <!--          <img src="@/assets/assets-full-logo.png" class="logo"/>-->
+      <!--        </span>-->
+      <!--        <div v-else class="header-operate-left">-->
+      <!--          <t-button-->
+      <!--              theme="default"-->
+      <!--              shape="square"-->
+      <!--              variant="text"-->
+      <!--              @click="changeCollapsed"-->
+      <!--          >-->
+      <!--            <template #icon>-->
+      <!--              <t-icon v-if="settingStore.isSidebarCompact" class="collapsed-icon" name="menu-fold"/>-->
+      <!--              <t-icon v-else class="collapsed-icon" name="menu-unfold"/>-->
+      <!--            </template>-->
+      <!--          </t-button>-->
+      <!--          <l-breadcrumb v-if="settingStore.showBreadcrumb"/>-->
+      <!--          &lt;!&ndash;          <search :layout="layout" />&ndash;&gt;-->
+      <!--        </div>-->
+      <!--      </template>-->
       <!--      <menu-content-->
-      <!--        v-show="layout !== 'side'"-->
-      <!--        class="header-menu"-->
-      <!--        :nav-data="menu"-->
+      <!--          v-show="layout !== 'side'"-->
+      <!--          class="header-menu"-->
+      <!--          :nav-data="menu"-->
       <!--      />-->
+      <template v-if="layout !== 'side'" #default>
+        <menu-content class="header-menu" :nav-data="menu"/>
+      </template>
       <template #operations>
         <div class="operations-container">
           <t-dropdown :min-column-width="135" trigger="click">
@@ -59,12 +62,12 @@
           </t-dropdown>
           <!--          <t-tooltip placement="bottom" content="系统设置">-->
           <!--            <t-button-->
-          <!--              theme="default"-->
-          <!--              shape="square"-->
-          <!--              variant="text"-->
-          <!--              @click="toggleSettingPanel"-->
+          <!--                theme="default"-->
+          <!--                shape="square"-->
+          <!--                variant="text"-->
+          <!--                @click="toggleSettingPanel"-->
           <!--            >-->
-          <!--              <t-icon name="setting" />-->
+          <!--              <t-icon name="setting"/>-->
           <!--            </t-button>-->
           <!--          </t-tooltip>-->
         </div>
@@ -80,8 +83,8 @@ import {getPermissionStore, useSettingStore, useUserStore} from "@/store";
 import {getActive} from "@/router";
 import {prefix} from "@/config/global";
 import {MenuRoute} from "@/types/interface";
-import LBreadcrumb from "@/layouts/components/Breadcrumb.vue";
 import {request} from "@/utils/request";
+import menuContent from "./MenuContent.vue";
 
 const props = defineProps({
   theme: {
@@ -209,15 +212,14 @@ const navToHelper = () => {
   }
 }
 
-//.header-menu {
-//  flex: 1 1 1;
-//  display: inline-flex;
-//
-//  :deep(.t-menu__item) {
-//    min-width: unset;
-//    padding: 0px 16px;
-//  }
-//}
+.header-menu {
+  flex: 1 1 1;
+  display: inline-flex;
+
+  :deep(.t-menu__item) {
+    min-width: unset;
+  }
+}
 
 .operations-container {
   display: flex;

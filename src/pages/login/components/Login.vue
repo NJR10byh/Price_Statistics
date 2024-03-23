@@ -48,10 +48,7 @@
 import {onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {Base64} from 'js-base64';
-import {checkAuth, userInfoToCache} from "@/utils/auth";
-import {request} from "@/utils/request";
-import {MessagePlugin} from "tdesign-vue-next";
-import {BASE_URL} from "./constants";
+import {userInfoToCache} from "@/utils/auth";
 
 const FORM_RULES = {
   phoneNum: [{required: true, message: "账号必填", type: "error"}],
@@ -89,32 +86,39 @@ onMounted(() => {
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
     loginBtnLoading.value = true;
-    if (!checkAuth()) {
-      localStorage.removeItem("token");
-      await request.post({
-        url: BASE_URL.login,
-        data: loginData
-      }).then(async res => {
-        localStorage.setItem("token", res.token);
-        if (rememberMe.value) {
-          const localForm = {
-            phoneNum: Base64.encode(loginData.phoneNum),
-            password: Base64.encode(loginData.password)
-          }
-          localStorage.setItem("LOCAL_KEY", JSON.stringify(localForm));
-        } else {
-          localStorage.removeItem("LOCAL_KEY");
-        }
-        await userInfoToCache(res.userInfo);
-      }).catch(err => {
-        MessagePlugin.error(err.message);
-      }).finally(() => {
-        loginBtnLoading.value = false;
-      });
-      await request.get({url: BASE_URL.checkCommodity});
-    } else {
-      loginBtnLoading.value = false;
+    // if (!checkAuth()) {
+    //   localStorage.removeItem("token");
+    //   await request.post({
+    //     url: BASE_URL.login,
+    //     data: loginData
+    //   }).then(async res => {
+    //     localStorage.setItem("token", res.token);
+    //     if (rememberMe.value) {
+    //       const localForm = {
+    //         phoneNum: Base64.encode(loginData.phoneNum),
+    //         password: Base64.encode(loginData.password)
+    //       }
+    //       localStorage.setItem("LOCAL_KEY", JSON.stringify(localForm));
+    //     } else {
+    //       localStorage.removeItem("LOCAL_KEY");
+    //     }
+    //     await userInfoToCache(res.userInfo);
+    //   }).catch(err => {
+    //     MessagePlugin.error(err.message);
+    //   }).finally(() => {
+    //     loginBtnLoading.value = false;
+    //   });
+    //   await request.get({url: BASE_URL.checkCommodity});
+    // } else {
+    //   loginBtnLoading.value = false;
+    // }
+    let userInfo = {
+      id: "0001",
+      phoneNum: "198077777",
+      name: "superadmin",
+      role: "superadmin"
     }
+    await userInfoToCache(userInfo);
   }
 };
 </script>

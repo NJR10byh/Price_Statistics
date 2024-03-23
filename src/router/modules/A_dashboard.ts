@@ -19,7 +19,7 @@ export default [
                 name: "mainInfo",
                 component: () => import("@/pages/dashboard/base/index.vue"),
                 meta: {title: "概览", rolePermission: ["root", "superadmin"]}
-            }
+            },
         ]
     }
 ];

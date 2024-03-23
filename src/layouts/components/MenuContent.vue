@@ -4,35 +4,35 @@
       <template v-if="!item.children || !item.children.length || item.meta?.single">
         <t-menu-item v-if="getHref(item)" :href="getHref(item)?.[0]" :name="item.path" :value="getPath(item)">
           <template #icon>
-            <t-icon v-if="beIcon(item)" :name="item.icon" />
-            <component :is="beRender(item).render" v-else-if="beRender(item).can" class="t-icon" />
+            <t-icon v-if="beIcon(item)" :name="item.icon"/>
+            <component :is="beRender(item).render" v-else-if="beRender(item).can" class="t-icon"/>
           </template>
           {{ item.title }}
         </t-menu-item>
         <t-menu-item v-else :name="item.path" :value="getPath(item)" :to="item.path">
           <template #icon>
-            <t-icon v-if="beIcon(item)" :name="item.icon" />
-            <component :is="beRender(item).render" v-else-if="beRender(item).can" class="t-icon" />
+            <t-icon v-if="beIcon(item)" :name="item.icon"/>
+            <component :is="beRender(item).render" v-else-if="beRender(item).can" class="t-icon"/>
           </template>
           {{ item.title }}
         </t-menu-item>
       </template>
       <t-submenu v-else :name="item.path" :value="item.path" :title="item.title">
         <template #icon>
-          <t-icon v-if="beIcon(item)" :name="item.icon" />
-          <component :is="beRender(item).render" v-else-if="beRender(item).can" class="t-icon" />
+          <t-icon v-if="beIcon(item)" :name="item.icon"/>
+          <component :is="beRender(item).render" v-else-if="beRender(item).can" class="t-icon"/>
         </template>
-        <menu-content v-if="item.children" :nav-data="item.children" />
+        <menu-content v-if="item.children" :nav-data="item.children"/>
       </t-submenu>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, PropType } from 'vue';
+import {computed, PropType} from 'vue';
 import isObject from 'lodash/isObject';
-import { MenuRoute } from '@/types/interface';
-import { getActive } from '@/router';
+import {MenuRoute} from '@/types/interface';
+import {getActive} from '@/router';
 
 const props = defineProps({
   navData: {
@@ -43,11 +43,12 @@ const props = defineProps({
 
 const active = computed(() => getActive());
 const list = computed(() => {
-  const { navData } = props;
+  const {navData} = props;
   return getMenuList(navData);
 });
 
 const getMenuList = (list: MenuRoute[], basePath?: string): MenuRoute[] => {
+  console.log(list)
   if (!list) {
     return [];
   }
@@ -56,18 +57,18 @@ const getMenuList = (list: MenuRoute[], basePath?: string): MenuRoute[] => {
     return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
   });
   return list
-    .map((item) => {
-      const path = basePath && !item.path.includes(basePath) ? `${basePath}/${item.path}` : item.path;
-      return {
-        path,
-        title: item.meta?.title,
-        icon: item.meta?.icon || '',
-        children: getMenuList(item.children, path),
-        meta: item.meta,
-        redirect: item.redirect,
-      };
-    })
-    .filter((item) => item.meta && item.meta.hidden !== true);
+      .map((item) => {
+        const path = basePath && !item.path.includes(basePath) ? `${basePath}/${item.path}` : item.path;
+        return {
+          path,
+          title: item.meta?.title,
+          icon: item.meta?.icon || '',
+          children: getMenuList(item.children, path),
+          meta: item.meta,
+          redirect: item.redirect,
+        };
+      })
+      .filter((item) => item.meta && item.meta.hidden !== true);
 };
 
 const getHref = (item: MenuRoute) => {
