@@ -16,8 +16,7 @@ const userStore = useUserStore();
 const permissionStore = usePermissionStore();
 const userInfo = reactive({
     id: "",
-    phoneNum: "",
-    name: "",
+    userName: "",
     role: ""
 });
 
@@ -55,21 +54,18 @@ export const checkAuth = () => {
  */
 export const userInfoToCache = async (info: {
     id: string;
-    phoneNum: string;
-    name: string;
+    userName: string;
     role: string;
 }) => {
-    console.log(info)
     userInfo.id = info.id;
-    userInfo.phoneNum = info.phoneNum;
-    userInfo.name = info.name;
+    userInfo.userName = info.userName;
     userInfo.role = info.role;
     userStore.getUserInfo(userInfo);
     await permissionStore.initRoutes(info.role);
     /* 处理主题 */
     formData.value.mode = chargeTheme(); // 根据当前系统时间切换主题模式（light、dark）
 
-    await MessagePlugin.success("欢迎您，" + info.name);
+    await MessagePlugin.success("欢迎您，" + info.userName);
 
     /* 分权限处理 默认跳转页 */
     formData.value.brandTheme = "default";

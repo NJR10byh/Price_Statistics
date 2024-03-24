@@ -57,8 +57,8 @@ export default ({mode}: ConfigEnv): UserConfig => {
             port: 3005,
             host: "localhost",
             proxy: {
-                "/smartReport": { /* 测试环境 */
-                    target: "http://120.24.253.160:6700",
+                "/price_statistics": { /* 测试环境 */
+                    target: "http://localhost:8089",
                     // 允许跨域
                     changeOrigin: true
                     // pathRewrite: { // 在发出请求后将 /patent 替换为''空值，这样不影响接口请求

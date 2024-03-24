@@ -3,8 +3,7 @@ import {store, usePermissionStore} from "@/store";
 
 const userInfo = {
     id: "",
-    phoneNum: "",
-    name: "",
+    userName: "",
     role: ""
 };
 
@@ -24,8 +23,7 @@ export const useUserStore = defineStore("user", {
         logout() {
             this.userInfo = {
                 id: "",
-                phoneNum: "",
-                name: "",
+                userName: "",
                 role: ""
             };
         }

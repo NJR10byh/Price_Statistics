@@ -116,17 +116,17 @@ const transform: AxiosTransform = {
     },
 
     // 请求拦截器处理
-    requestInterceptors: (config, options) => {
-        // 请求之前处理config
-        const token = localStorage.getItem("token");
-        if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
-            // jwt token
-            (config as Recordable).headers.token = options.authenticationScheme
-                ? `${options.authenticationScheme} ${token}`
-                : token;
-        }
-        return config;
-    },
+    // requestInterceptors: (config, options) => {
+    //     // 请求之前处理config
+    //     const token = localStorage.getItem("token");
+    //     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
+    //         // jwt token
+    //         (config as Recordable).headers.token = options.authenticationScheme
+    //             ? `${options.authenticationScheme} ${token}`
+    //             : token;
+    //     }
+    //     return config;
+    // },
 
     // 响应拦截器处理
     responseInterceptors: (res) => {
@@ -177,7 +177,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
                     /**
                      * 接口前缀
                      */
-                    urlPrefix: "/smartReport",
+                    urlPrefix: "/price_statistics",
                     // 是否返回原生响应头 比如：需要获取响应头时使用该属性
                     isReturnNativeResponse: false,
                     // 需要对返回数据进行处理

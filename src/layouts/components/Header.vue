@@ -55,7 +55,7 @@
               </template>
               <div class="header-user-account">
                 你好，
-                <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.name }}</span>
+                <span style="color: var(--td-brand-color);font-weight: bold">{{ userStore.userInfo.userName }}</span>
                 <t-icon name="chevron-down"/>
               </div>
             </t-button>

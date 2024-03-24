@@ -9,7 +9,7 @@
   >
     <t-form-item name="phoneNum">
       <t-input
-          v-model="loginData.phoneNum"
+          v-model="loginData.userName"
           size="large"
           placeholder="请输入账号"
       >
@@ -20,7 +20,7 @@
     </t-form-item>
     <t-form-item name="password">
       <t-input
-          v-model="loginData.password"
+          v-model="loginData.passWord"
           size="large"
           type="password"
           clearable
@@ -48,16 +48,19 @@
 import {onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {Base64} from 'js-base64';
-import {userInfoToCache} from "@/utils/auth";
+import {checkAuth, userInfoToCache} from "@/utils/auth";
+import {request} from "@/utils/request";
+import {BASE_URL} from "@/pages/login/components/constants";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const FORM_RULES = {
-  phoneNum: [{required: true, message: "账号必填", type: "error"}],
-  password: [{required: true, message: "密码必填", type: "error"}]
+  userName: [{required: true, message: "账号必填", type: "error"}],
+  passWord: [{required: true, message: "密码必填", type: "error"}]
 };
 
 const loginData = reactive({
-  phoneNum: "",
-  password: ""
+  userName: "",
+  passWord: ""
 });
 const rememberMe = ref(false);
 const showPsw = ref(false);
@@ -72,8 +75,8 @@ onMounted(() => {
     try {
       const {phoneNum, password} = JSON.parse(localForm)
       Object.assign(loginData, {
-        phoneNum: Base64.decode(phoneNum),
-        password: Base64.decode(password)
+        userName: Base64.decode(phoneNum),
+        passWord: Base64.decode(password)
       })
     } catch (error) {
       console.error('本地数据解析失败~', error)
@@ -86,39 +89,30 @@ onMounted(() => {
 const onSubmit = async ({validateResult}) => {
   if (validateResult === true) {
     loginBtnLoading.value = true;
-    // if (!checkAuth()) {
-    //   localStorage.removeItem("token");
-    //   await request.post({
-    //     url: BASE_URL.login,
-    //     data: loginData
-    //   }).then(async res => {
-    //     localStorage.setItem("token", res.token);
-    //     if (rememberMe.value) {
-    //       const localForm = {
-    //         phoneNum: Base64.encode(loginData.phoneNum),
-    //         password: Base64.encode(loginData.password)
-    //       }
-    //       localStorage.setItem("LOCAL_KEY", JSON.stringify(localForm));
-    //     } else {
-    //       localStorage.removeItem("LOCAL_KEY");
-    //     }
-    //     await userInfoToCache(res.userInfo);
-    //   }).catch(err => {
-    //     MessagePlugin.error(err.message);
-    //   }).finally(() => {
-    //     loginBtnLoading.value = false;
-    //   });
-    //   await request.get({url: BASE_URL.checkCommodity});
-    // } else {
-    //   loginBtnLoading.value = false;
-    // }
-    let userInfo = {
-      id: "0001",
-      phoneNum: "198077777",
-      name: "superadmin",
-      role: "superadmin"
+    if (!checkAuth()) {
+      await request.post({
+        url: BASE_URL.login,
+        data: loginData
+      }).then(async res => {
+        console.log(res)
+        if (rememberMe.value) {
+          const localForm = {
+            phoneNum: Base64.encode(loginData.userName),
+            password: Base64.encode(loginData.passWord)
+          }
+          localStorage.setItem("LOCAL_KEY", JSON.stringify(localForm));
+        } else {
+          localStorage.removeItem("LOCAL_KEY");
+        }
+        await userInfoToCache(res);
+      }).catch(err => {
+        MessagePlugin.error(err.message);
+      }).finally(() => {
+        loginBtnLoading.value = false;
+      });
+    } else {
+      loginBtnLoading.value = false;
     }
-    await userInfoToCache(userInfo);
   }
 };
 </script>
