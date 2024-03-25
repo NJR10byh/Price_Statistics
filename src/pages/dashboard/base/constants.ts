@@ -5,11 +5,7 @@
  * @version 0.1.0
  */
 export const BASE_URL = {
-    queryList: "/reports/queryList",
-    listCommodity: "/reports/listCommodity",
-    edit: "/reports/edit",
-    downloadExcel: "/reports/downloadExcel",
-    downloadPic: "/reports/downloadPic"
+    fileUpload: "/file/upload",
 };
 
 export const MAIN_INFO_TABLE_COLUMNS = [

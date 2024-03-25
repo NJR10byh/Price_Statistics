@@ -8,16 +8,28 @@
   <div>
     <t-card class="main-info-card">
       <t-row justify="start" class="cardTop">
-        <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>
-        <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>
-        <t-date-range-picker class="inputStyle rangeInputStyle" v-model="reportDateRange"
-                             :placeholder="['时间 起', '时间 止']" enable-time-picker clearable/>
-        <t-button style="margin-left: 5px;width: 100px;">
-          <template #icon>
-            <t-icon name="search"></t-icon>
-          </template>
-          查询
-        </t-button>
+        <!--        <t-input class="inputStyle" v-model="currRequestBody.orderId" placeholder="请输入订单号" clearable/>-->
+        <!--        <t-input class="inputStyle" v-model="currRequestBody.reporter" placeholder="请输入报单人" clearable/>-->
+        <!--        <t-date-range-picker class="inputStyle rangeInputStyle" v-model="reportDateRange"-->
+        <!--                             :placeholder="['时间 起', '时间 止']" enable-time-picker clearable/>-->
+        <!--        <t-button style="margin-left: 5px;width: 100px;">-->
+        <!--          <template #icon>-->
+        <!--            <t-icon name="search"></t-icon>-->
+        <!--          </template>-->
+        <!--          查询-->
+        <!--        </t-button>-->
+        <t-upload
+            ref="txtUpload"
+            :abridge-name="[10,8]"
+            accept=".txt"
+            :show-upload-progress="false"
+            :use-mock-progress="true"
+            :before-upload="beforeUpload"
+            :request-method="uploadTXT"
+            :size-limit="{ size: 5, unit: 'MB' }"
+            @validate="validateFile"
+            @fail="uploadFail"
+        />
       </t-row>
     </t-card>
     <t-card class="main-info-card">
@@ -50,11 +62,13 @@
 
 <script setup lang="ts">
 import {computed, onMounted, reactive, ref} from 'vue';
-import {MAIN_INFO_TABLE_COLUMNS} from "./constants";
+import {BASE_URL, MAIN_INFO_TABLE_COLUMNS} from "./constants";
 import {useSettingStore} from "@/store";
 import {useRouter} from "vue-router";
 import {prefix} from "@/config/global";
 import {isNotEmpty} from "@/utils/validate";
+import {uploadFile, validateFile} from "@/utils/files";
+import {MessagePlugin} from "tdesign-vue-next";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -71,8 +85,12 @@ const getContainer = () => {
   return document.querySelector(`.${prefix}-layout`);
 };
 
+const txtUpload = ref();
+
 // 日期范围
 const reportDateRange = ref([])
+
+const txtFile = ref();
 
 /**
  * 搜索相关
@@ -114,6 +132,18 @@ onMounted(async () => {
   await getTableData();
 });
 
+/**
+ * 操作钩子
+ */
+// 分页钩子
+const userListTablePageChange = (curr: any) => {
+  console.log("分页变化", curr);
+};
+// 上传文件失败钩子
+const uploadFail = ({file}) => {
+  MessagePlugin.error(`文件 ${file.name} 上传失败`);
+};
+
 const getTableData = async () => {
   mainInfoTable.tableData = [];
   mainInfoTable.tableLoading = true;
@@ -127,9 +157,46 @@ const getTableData = async () => {
   }
   mainInfoTable.tableData.push(obj);
   mainInfoTable.tableLoading = false;
-
 }
 
+/**
+ * 上传
+ */
+const beforeUpload = (file: {
+  name: any; type: string;
+}) => {
+  // 使用 split() 方法拆分文件名
+  const parts = file.name.split('.');
+// 获取数组的最后一个元素作为后缀名
+  const fileExtension = parts[parts.length - 1];
+  if (fileExtension !== 'txt') {
+    return false;
+  }
+  return true;
+};
+
+// 上传txt文件
+const uploadTXT = (file: any) => {
+  if (isNotEmpty(file.raw)) {
+    return new Promise((resolve, reject) => {
+      let fileFormData = new FormData();
+      fileFormData.append("file", file.raw);
+      uploadFile(BASE_URL.fileUpload, fileFormData, percentCompleted => {
+      }).then(res => {
+        console.log("上传成功", res)
+        resolve({
+          status: 'success',
+        });
+      }).catch(err => {
+        console.error(err);
+        resolve({
+          status: 'fail',
+        });
+      }).finally(() => {
+      })
+    })
+  }
+}
 </script>
 
 <style scoped lang="less">
