@@ -139,10 +139,6 @@ onMounted(async () => {
 const userListTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
 };
-// 上传文件失败钩子
-const uploadFail = ({file}) => {
-  MessagePlugin.error(`文件 ${file.name} 上传失败`);
-};
 
 const getTableData = async () => {
   mainInfoTable.tableData = [];
@@ -183,12 +179,13 @@ const uploadTXT = (file: any) => {
       fileFormData.append("file", file.raw);
       uploadFile(BASE_URL.fileUpload, fileFormData, percentCompleted => {
       }).then(res => {
-        console.log("上传成功", res)
+        MessagePlugin.success(res);
         resolve({
           status: 'success',
         });
       }).catch(err => {
-        console.error(err);
+        console.log(err.message)
+        MessagePlugin.error(err.message + `，文件 ${file.name} 上传失败`)
         resolve({
           status: 'fail',
         });

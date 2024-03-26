@@ -18,7 +18,7 @@ export interface RequestOptions {
 }
 
 export interface Result<T = any> {
-    msg: string;
+    status: string;
     code: number;
     data: T;
 }

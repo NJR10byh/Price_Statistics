@@ -43,6 +43,9 @@ const transform: AxiosTransform = {
         if (!data) {
             throw new Error("请求接口错误");
         }
+        if (data.status === "fail") {
+            throw new Error(res.data.data.errMsg);
+        }
 
         //  这里 code为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
         const {code} = data;
@@ -56,7 +59,7 @@ const transform: AxiosTransform = {
         if (code === 401) {
             // window.location.href = "http://120.24.253.160:3000/#/login";
         } else {
-            throw new Error(data.msg);
+            throw new Error(data.status);
         }
     },
 
