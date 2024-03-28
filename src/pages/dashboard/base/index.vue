@@ -28,7 +28,6 @@
             :request-method="uploadTXT"
             :size-limit="{ size: 5, unit: 'MB' }"
             @validate="validateFile"
-            @fail="uploadFail"
         />
       </t-row>
     </t-card>
@@ -40,6 +39,7 @@
           :columns="MAIN_INFO_TABLE_COLUMNS"
           bordered
           hover
+          stripe
           :loading="mainInfoTable.tableLoading"
           :pagination="mainInfoTable.pagination"
           :header-affix-props="{ offsetTop: 0 }"
@@ -48,13 +48,14 @@
           :pagination-affixed-bottom="{ offsetBottom: 0,container: getContainer }"
           :scroll="{ type: 'virtual' }"
           lazy-load
+          @page-change="mainInfoTablePageChange"
           size="small"
       >
-        <template #model="slotProps">
-          <t-tag theme="default">
-            <span style="font-weight: bold;">{{ isNotEmpty(slotProps.row.model) ? slotProps.row.model : "暂无" }}</span>
-          </t-tag>
-        </template>
+        <!--        <template #model="slotProps">-->
+        <!--          <t-tag theme="default">-->
+        <!--            <span style="font-weight: bold;">{{ isNotEmpty(slotProps.row.model) ? slotProps.row.model : "暂无" }}</span>-->
+        <!--          </t-tag>-->
+        <!--        </template>-->
       </t-table>
     </t-card>
   </div>
@@ -69,6 +70,7 @@ import {prefix} from "@/config/global";
 import {isNotEmpty} from "@/utils/validate";
 import {uploadFile, validateFile} from "@/utils/files";
 import {MessagePlugin} from "tdesign-vue-next";
+import {request} from "@/utils/request";
 
 const store = useSettingStore();
 const router = useRouter();
@@ -96,15 +98,13 @@ const txtFile = ref();
  * 搜索相关
  */
 const currRequestBody = reactive({
-  pageNo: 1, // 页
-  pageItems: 10, // 条数
-  orderId: "", // 订单号
-  commodityId: "",// 商品id
-  commodity: "",// 商品
-  reporter: "",// 报单人
-  startTime: "",
-  endTime: "",
-  status: "" // 全部-不传 已报单-0 待审核-1
+  currPage: 1, // 页
+  size: 20, // 条数
+  searchCondition: {
+    brand: "",
+    model: "",
+    supplier: ""
+  },
 })
 
 /**
@@ -117,7 +117,7 @@ const mainInfoTable = reactive({
   pagination: {
     total: 0,
     current: 1,
-    pageSize: 10
+    pageSize: 20
   }
 });
 
@@ -127,8 +127,8 @@ const mainInfoTable = reactive({
 /* 生命周期 */
 // 组件挂载完成后执行
 onMounted(async () => {
-  mainInfoTable.pagination.current = currRequestBody.pageNo;
-  mainInfoTable.pagination.pageSize = currRequestBody.pageItems;
+  mainInfoTable.pagination.current = currRequestBody.currPage;
+  mainInfoTable.pagination.pageSize = currRequestBody.size;
   await getTableData();
 });
 
@@ -136,23 +136,33 @@ onMounted(async () => {
  * 操作钩子
  */
 // 分页钩子
-const userListTablePageChange = (curr: any) => {
+const mainInfoTablePageChange = (curr: any) => {
   console.log("分页变化", curr);
+  mainInfoTable.pagination.current = curr.current;
+  mainInfoTable.pagination.pageSize = curr.pageSize;
+  currRequestBody.currPage = curr.current;
+  currRequestBody.size = curr.pageSize;
+  getTableData();
 };
 
 const getTableData = async () => {
   mainInfoTable.tableData = [];
   mainInfoTable.tableLoading = true;
-  let obj = {
-    brand: "海尔",
-    category: "冰箱",
-    model: "BCD-526WGHTD14S8U1",
-    channel_price: "6199",
-    retail_price: "6599",
-    recommended_retail_price: "6399"
-  }
-  mainInfoTable.tableData.push(obj);
-  mainInfoTable.tableLoading = false;
+  request.post({
+    url: BASE_URL.getCommodityList,
+    data: currRequestBody
+  }).then(({records, total}) => {
+    console.log(records)
+    for (let i = 0; i < records.length; i++) {
+      records[i].index = (mainInfoTable.pagination.current - 1) * mainInfoTable.pagination.pageSize + i + 1;
+    }
+    mainInfoTable.tableData = records;
+    mainInfoTable.pagination.total = total;
+  }).catch(err => {
+    console.log(err);
+  }).finally(() => {
+    mainInfoTable.tableLoading = false;
+  })
 }
 
 /**
@@ -190,6 +200,7 @@ const uploadTXT = (file: any) => {
           status: 'fail',
         });
       }).finally(() => {
+        getTableData();
       })
     })
   }

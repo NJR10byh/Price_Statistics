@@ -6,6 +6,7 @@
  */
 export const BASE_URL = {
     fileUpload: "/file/upload",
+    getCommodityList: "/commodity/getCommodityList",
 };
 
 export const MAIN_INFO_TABLE_COLUMNS = [
@@ -18,9 +19,16 @@ export const MAIN_INFO_TABLE_COLUMNS = [
         children: [
             {
                 align: "center",
+                colKey: 'index',
+                title: '序号',
+                width: 50,
+                ellipsis: true
+            },
+            {
+                align: "center",
                 colKey: 'brand',
                 title: '品牌',
-                width: 80,
+                width: 100,
                 ellipsis: true
             },
             {
@@ -31,29 +39,29 @@ export const MAIN_INFO_TABLE_COLUMNS = [
                 ellipsis: true
             },
             {
-                align: "center",
+                align: "left",
                 colKey: 'model',
                 title: '型号',
-                width: 180,
+                width: 150,
                 ellipsis: true
             },
             {
                 align: "center",
                 colKey: 'channel_price',
                 title: '渠道价',
-                width: 110,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'retail_price',
                 title: '零售定价',
-                width: 110,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'recommended_retail_price',
                 title: '建议零售价',
-                width: 110,
+                width: 90,
             },
         ],
     },
@@ -67,19 +75,20 @@ export const MAIN_INFO_TABLE_COLUMNS = [
                 align: "center",
                 colKey: 'lowest_90_price',
                 title: '价格',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'lowest_90_time',
                 title: '时间',
-                width: 110,
+                width: 180,
             },
             {
                 align: "center",
                 colKey: 'lowest_90_time_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
         ],
     },
@@ -93,19 +102,20 @@ export const MAIN_INFO_TABLE_COLUMNS = [
                 align: "center",
                 colKey: 'recent_update_price',
                 title: '价格',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'recent_update_time',
                 title: '时间',
-                width: 110,
+                width: 180,
             },
             {
                 align: "center",
                 colKey: 'recent_update_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
         ],
     },
@@ -119,25 +129,27 @@ export const MAIN_INFO_TABLE_COLUMNS = [
                 align: "center",
                 colKey: 'daily_update_lowest_price',
                 title: '最低价',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'daily_update_lowest_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
             {
                 align: "center",
                 colKey: 'daily_update_second_lowest_price',
                 title: '次低价',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'daily_update_second_lowest_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
         ],
     },
@@ -151,25 +163,27 @@ export const MAIN_INFO_TABLE_COLUMNS = [
                 align: "center",
                 colKey: 'yesterday_update_lowest_price',
                 title: '最低价',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'yesterday_update_lowest_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
             {
                 align: "center",
                 colKey: 'yesterday_update_second_lowest_price',
                 title: '次低价',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'yesterday_update_second_lowest_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
         ],
     },
@@ -183,25 +197,27 @@ export const MAIN_INFO_TABLE_COLUMNS = [
                 align: "center",
                 colKey: 'third_day_update_lowest_price',
                 title: '最低价',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'third_day_update_lowest_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
             {
                 align: "center",
                 colKey: 'third_day_update_second_lowest_price',
                 title: '次低价',
-                width: 120,
+                width: 80,
             },
             {
                 align: "center",
                 colKey: 'third_day_update_second_lowest_supplier',
                 title: '供应商',
-                width: 110,
+                width: 100,
+                ellipsis: true
             },
         ],
     },
